@@ -1,6 +1,6 @@
 package softwaredesign973.polynomial;
 
-public class Coefficient implements PolynomialCompenent {
+public class Coefficient extends PolynomialComponent {
     
     public boolean valid = true;
     
@@ -15,5 +15,20 @@ public class Coefficient implements PolynomialCompenent {
         }
         
     }
+
+    @Override
+    public void add(PolynomialComponent c) {
+
+    }
+
+    @Override
+    public void toExponent(int e) {
+        
+        value = (int) Math.pow(value, e);
     
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

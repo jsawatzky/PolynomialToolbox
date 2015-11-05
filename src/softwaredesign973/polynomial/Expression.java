@@ -2,7 +2,7 @@ package softwaredesign973.polynomial;
 
 import java.util.ArrayList;
 
-public class Expression implements PolynomialCompenent {
+public class Expression extends PolynomialComponent {
     
     public boolean valid = true;
     
@@ -14,11 +14,19 @@ public class Expression implements PolynomialCompenent {
             e = "+" + e;
         }
         
-        for (int i = 0; i < e.length() - e.replace("+", "").replace("-", "").length(); i++) {
+        for (int i = 0; i < e.length() - e.replace("+", "").replace("-", "").length() - 1; i++) {
             
-            int index = Math.min(e.substring(1).index("+"), e.substring(1).index("-"));
+            int index1 = e.substring(1).indexOf("+");
+            int index2 = e.substring(1).indexOf("-");
+
+            int index;
+            if (index1 < index2 && index1 != -1) {
+                index = index1;
+            } else {
+                index = index2;
+            }
             
-            terms.append(new Term(e.substring(0, index)));
+            terms.add(new Term(e.substring(0, index)));
             
             e = e.substring(index);
             
@@ -31,6 +39,26 @@ public class Expression implements PolynomialCompenent {
             }
         }
         
+    }
+
+    @Override
+    public void add(PolynomialComponent c) {
+
+        if (c instanceof Expression) {
+
+            terms.addAll(((Expression) c).terms);
+
+        }
+
+    }
+
+    @Override
+    public void toExponent(int e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Term[] getTerms() {
+        return (Term[]) terms.toArray();
     }
     
 }
