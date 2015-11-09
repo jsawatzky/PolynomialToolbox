@@ -14,3 +14,5 @@ hs_err_pid*
 /dist/
 
 nbproject/private/
+*.properties
+nbproject/private/private.xml
