@@ -93,19 +93,21 @@ public class Polynomial {
 
     }
     
-<<<<<<< HEAD
     public Polynomial getDerivative() {
-        Term[] initialPolynomial = getTerms();
+        
         ArrayList<Term> newTerms = new ArrayList<>();
         
-        for (int i = 0; i < initialPolynomial.length; i++) {
-            double newCoef = initialPolynomial[i].getExponent() * initialPolynomial[i].getCoefficient();
-            int newExp = initialPolynomial[i].getExponent() - 1;
+        for (int i = 0; i < terms.size(); i++) {
+            double newCoef = terms.get(i).getExponent() * terms.get(i).getCoefficient();
+            int newExp = terms.get(i).getExponent() - 1;
             Term a = new Term (newCoef,newExp);
             newTerms.add(a);
         }
+        
         return new Polynomial(newTerms);
-=======
+        
+    }
+    
     public void subtract(Polynomial other) {
 
         other.multiply(new Polynomial(new Term[] {new Term(-1, 0)}));
@@ -159,7 +161,6 @@ public class Polynomial {
 
         return newPolynomial;
 
->>>>>>> origin/master
     }
 
     private void simplify() {
@@ -214,7 +215,7 @@ public class Polynomial {
 
             if (t.getCoefficient() < 0) {
                 stringBuilder.append(" - ");
-            } else {
+            } else if (t.getCoefficient() != 0) {
                 stringBuilder.append(" + ");
             }
 
