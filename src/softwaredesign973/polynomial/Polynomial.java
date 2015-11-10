@@ -2,6 +2,7 @@ package softwaredesign973.polynomial;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Polynomial {
     
@@ -10,52 +11,166 @@ public class Polynomial {
     public Polynomial(Term[] terms) {
         
         this.terms.addAll(Arrays.asList(terms));
+        simplify();
+        sort();
         
+    }
+
+    private Polynomial(ArrayList<Term> terms) {
+
+        this.terms = terms;
+        simplify();
+        sort();
+
     }
 
     public Term[] getTerms() {
         return (Term[]) terms.toArray();
     }
     
-    public Polynomial getFullPoly() {
-        int exp = this.terms.get(0).getExponent();
-        
-        Term[] fullPoly = new Term[exp+1]; //Array to be fully filled with terms
-        int [] comparer = new int[exp+1]; //Array of terms with the length of the polynomial degree
-        int n = exp;
-        int counter = 0;
-        while (n != 0) {
-            comparer[counter] = n;
-            n = n - 1;
-            counter++;
-        }
-        
-        for (int i = 0; i < this.getTerms().length; i++) {
-            for (int j = 0; j < exp + 1; j++) {
-                if (comparer[j] == )
+    public Polynomial getFullPolynomial() {
+
+        Term[] newTerms = new Term[terms.get(0).getExponent()];
+
+        int index = 0;
+        for (int i = 0; i < newTerms.length; i++) {
+
+            int t1Exp = terms.get(index).getExponent();
+
+            if (t1Exp < newTerms.length-i-1) {
+                newTerms[i] = new Term(0, newTerms.length-i-1);
+            } else {
+                newTerms[i] = terms.get(index);
+                index++;
             }
-         }
-        
-        return 
+
+        }
+
+        return new Polynomial(newTerms);
+
+    }
+
+    public Polynomial getFullPolynomial(int degree) {
+
+        Term[] newTerms = new Term[degree];
+
+        int index = 0;
+        for (int i = 0; i < degree; i++) {
+
+            int t1Exp = terms.get(index).getExponent();
+
+            if (t1Exp < degree-i-1) {
+                newTerms[i] = new Term(0, degree-i-1);
+            } else {
+                newTerms[i] = terms.get(index);
+                index++;
+            }
+
+        }
+
+        return new Polynomial(newTerms);
+
     }
     
-    public Polynomial add(Polynomial other) {
-        Term[] terms1 = new Term[this.getTerms().length]; //First polynomial to be added
-        Term[] terms2 = new Term[other.getTerms().length]; //Second polynomial to be added
-      
-        int numTerms = this.getTerms().length;
-        int numTerms2 = other.getTerms().length;
-        
-        Term[] newTerms = new Term[numTerms + numTerms2]; //New polynomial array that will put terms together
-        
-        for (int i = 0; i < numTerms; i++) {
-            newTerms[i] = terms1[i];
+    public void add(Polynomial other) {
+
+        this.terms.addAll(other.terms);
+        simplify();
+        sort();
+
+    }
+
+    public static Polynomial add(Polynomial p1, Polynomial p2) {
+
+        ArrayList<Term> newTerms = new ArrayList<>();
+
+        newTerms.addAll(p1.terms);
+        newTerms.addAll(p2.terms);
+
+        Polynomial newPolynomial = new Polynomial(newTerms);
+
+        return newPolynomial;
+
+    }
+
+    private void simplify() {
+
+        ArrayList<Term> newTerms = new ArrayList<>();
+
+        for (int i = 0; i < terms.size(); i++) {
+
+            Term t1 = terms.get(i);
+            double coef = t1.getCoefficient();
+            int exp = t1.getExponent();
+
+            if (coef == 0 && exp == 0) {
+                continue;
+            }
+
+            for (int j = i+1; j < terms.size(); j++) {
+
+                Term t2 = terms.get(j);
+
+                if (t2.getExponent() == exp) {
+
+                    coef += t2.getCoefficient();
+                    terms.set(j, new Term(0, 0));
+
+                }
+
+            }
+
+            newTerms.add(new Term(coef, exp));
+
         }
-        
-        for (int j = 0; j < numTerms2; j++) {
-            newTerms[j] = terms2[j];
+
+        terms = newTerms;
+        sort();
+
+    }
+
+    private void sort() {
+
+        Collections.sort(terms);
+        Collections.reverse(terms);
+
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Term t: terms) {
+
+            if (t.getCoefficient() < 0) {
+                stringBuilder.append(" - ");
+            } else {
+                stringBuilder.append(" + ");
+            }
+
+            if (t.getCoefficient() != 0) {
+
+                stringBuilder.append(Math.abs(t.getCoefficient()));
+                if (t.getExponent() > 0) {
+                    stringBuilder.append("x");
+                    if (t.getExponent() > 1) {
+                        stringBuilder.append("^");
+                        stringBuilder.append(t.getExponent());
+                    }
+                }
+
+            }
+
         }
-        
-        return new Polynomial(newTerms);
+
+        if (stringBuilder.indexOf("+") == 1) {
+            stringBuilder.delete(0, 2);
+        } else {
+            stringBuilder.delete(0, 1);
+        }
+
+        return stringBuilder.toString();
+
     }
 }

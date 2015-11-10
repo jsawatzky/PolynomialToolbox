@@ -1,7 +1,6 @@
 package softwaredesign973.gui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,16 +40,38 @@ public class PolynomialInput extends JPanel {
         int height = getPreferredSize().height;
         
         for (int i = 0; i < numTerms; i++) {
-            
-            JSpinner sign = new JSpinner(new SpinnerListModel(new String[] {"+", "-"}));
-            JSpinner coef = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-            JLabel vari = new JLabel("x");
-            JSpinner exp = new JSpinner(new SpinnerNumberModel(numTerms-i-1, 0, 10, 1));
-            
-            terms.add(new JSpinner[]{sign, coef, exp});
-            
-            
-            
+
+            if (terms.size() < i+1) {
+
+                JSpinner sign = new JSpinner(new SpinnerListModel(new String[]{"+", "-"}));
+                JSpinner coef = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+                JSpinner exp = new JSpinner(new SpinnerNumberModel(numTerms - i - 1, 0, 10, 1));
+
+                terms.add(new JSpinner[]{sign, coef, exp});
+
+            }
+
+            JSpinner[] term = terms.get(i);
+
+            c.gridy = 0;
+
+            c.gridx = i*4;
+            c.gridheight = 2;
+            term[0].setPreferredSize(new Dimension((int)(width*0.2), height));
+            add(term[0], c);
+
+            c.gridx = i*4+1;
+            term[0].setPreferredSize(new Dimension((int)(width*0.4), height));
+            add(term[1], c);
+
+            c.gridx = i*4+2;
+            term[0].setPreferredSize(new Dimension((int)(width*0.2), height));
+            add(new JLabel("x"), c);
+
+            c.gridx = i*4+3;
+            c.gridheight = 1;
+            term[0].setPreferredSize(new Dimension((int)(width*0.2), height));
+            add(term[2], c);
         }
         
     }
@@ -63,7 +84,7 @@ public class PolynomialInput extends JPanel {
             
             JSpinner[] term = terms.get(i);
             
-            polyTerms[i] = new Term(Integer.parseInt((String)term[0].getValue()+(Integer)term[1].getValue()), (Integer)term[2].getValue());
+            polyTerms[i] = new Term(Integer.parseInt((String)term[0].getValue()+term[1].getValue()), (Integer)term[2].getValue());
             
         }
         
