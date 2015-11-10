@@ -92,6 +92,61 @@ public class Polynomial {
         return newPolynomial;
 
     }
+    
+    public void subtract(Polynomial other) {
+
+        other.multiply(new Polynomial(new Term[] {new Term(-1, 0)}));
+        this.terms.addAll(other.terms);
+        simplify();
+        sort();
+
+    }
+    
+    public static Polynomial subtract(Polynomial p1, Polynomial p2) {
+
+        ArrayList<Term> newTerms = new ArrayList<>();
+
+        newTerms.addAll(p1.terms);
+        Polynomial p2New = multiply(p2, new Polynomial(new Term[] {new Term(-1, 0)}));
+        newTerms.addAll(p2New.terms);
+
+        Polynomial newPolynomial = new Polynomial(newTerms);
+
+        return newPolynomial;
+
+    }
+    
+    public void multiply(Polynomial other) {
+        
+        ArrayList<Term> newTerms = new ArrayList<>();
+
+        for (Term t1: this.terms) {
+            for (Term t2: other.terms) {
+                newTerms.add(new Term(t1.getCoefficient()*t2.getCoefficient(), t1.getExponent()+t2.getExponent()));
+            }
+        }
+        
+        terms = newTerms;
+        simplify();
+        sort();
+
+    }
+    
+    public static Polynomial multiply(Polynomial p1, Polynomial p2) {
+
+        ArrayList<Term> newTerms = new ArrayList<>();
+
+        for (Term t1: p1.terms) {
+            for (Term t2: p2.terms) {
+                newTerms.add(new Term(t1.getCoefficient()*t2.getCoefficient(), t1.getExponent()+t2.getExponent()));
+            }
+        }
+
+        Polynomial newPolynomial = new Polynomial(newTerms);
+
+        return newPolynomial;
+
+    }
 
     private void simplify() {
 

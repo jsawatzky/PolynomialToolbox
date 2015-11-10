@@ -19,6 +19,10 @@ public class SoftwareDesign973 {
 
         Polynomial sum = Polynomial.add(p1, p2);
         System.out.println("The sum of them is: " + sum);
+        Polynomial dif = Polynomial.subtract(p1, p2);
+        System.out.println("The difference of them is: " + dif);
+        Polynomial prod = Polynomial.multiply(p1, p2);
+        System.out.println("The product of them is: " + prod);
         
     }
 }
