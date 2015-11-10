@@ -20,19 +20,19 @@ public class Polynomial {
     public Polynomial getFullPoly() {
         int exp = this.terms.get(0).getExponent();
         
-        Term[] fullPoly = new Term[exp+1];
-        int [] sample = new int[exp+1];
+        Term[] fullPoly = new Term[exp+1]; //Array to be fully filled with terms
+        int [] comparer = new int[exp+1]; //Array of terms with the length of the polynomial degree
         int n = exp;
         int counter = 0;
         while (n != 0) {
-            sample[counter] = n;
+            comparer[counter] = n;
             n = n - 1;
             counter++;
         }
         
         for (int i = 0; i < this.getTerms().length; i++) {
             for (int j = 0; j < exp + 1; j++) {
-                if (sample[j] == )
+                if (comparer[j] == )
             }
          }
         
@@ -40,15 +40,20 @@ public class Polynomial {
     }
     
     public Polynomial add(Polynomial other) {
-        Term[] terms1 = new Term[this.getTerms().length];
-        Term[] terms2 = new Term[other.getTerms().length];
+        Term[] terms1 = new Term[this.getTerms().length]; //First polynomial to be added
+        Term[] terms2 = new Term[other.getTerms().length]; //Second polynomial to be added
       
-        int numTerms = this.getTerms().length + other.getTerms().length;
-        Term[] newTerms = new Term[numTerms];
+        int numTerms = this.getTerms().length;
+        int numTerms2 = other.getTerms().length;
         
-        for (int i = 0; i < numTerms; i += 2) {
+        Term[] newTerms = new Term[numTerms + numTerms2]; //New polynomial array that will put terms together
+        
+        for (int i = 0; i < numTerms; i++) {
             newTerms[i] = terms1[i];
-            newTerms[i+1] = terms2[i];
+        }
+        
+        for (int j = 0; j < numTerms2; j++) {
+            newTerms[j] = terms2[j];
         }
         
         return new Polynomial(newTerms);
