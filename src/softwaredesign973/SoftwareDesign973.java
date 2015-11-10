@@ -20,5 +20,8 @@ public class SoftwareDesign973 {
         Polynomial sum = Polynomial.add(p1, p2);
         System.out.println("The sum of them is: " + sum);
         
+        Polynomial der = p1.getDerivative();
+        System.out.println("The derivitave of p1 is: " + der);
+        
     }
 }

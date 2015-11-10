@@ -92,6 +92,19 @@ public class Polynomial {
         return newPolynomial;
 
     }
+    
+    public Polynomial getDerivative() {
+        Term[] initialPolynomial = getTerms();
+        ArrayList<Term> newTerms = new ArrayList<>();
+        
+        for (int i = 0; i < initialPolynomial.length; i++) {
+            double newCoef = initialPolynomial[i].getExponent() * initialPolynomial[i].getCoefficient();
+            int newExp = initialPolynomial[i].getExponent() - 1;
+            Term a = new Term (newCoef,newExp);
+            newTerms.add(a);
+        }
+        return new Polynomial(newTerms);
+    }
 
     private void simplify() {
 
