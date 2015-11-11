@@ -93,18 +93,19 @@ public class Polynomial {
 
     }
     
+    //Finding the derivative of the Polynomial
     public Polynomial getDerivative() {
         
-        ArrayList<Term> newTerms = new ArrayList<>();
+        ArrayList<Term> newTerms = new ArrayList<>(); //New List of Terms
         
         for (int i = 0; i < terms.size(); i++) {
-            double newCoef = terms.get(i).getExponent() * terms.get(i).getCoefficient();
-            int newExp = terms.get(i).getExponent() - 1;
-            Term a = new Term (newCoef,newExp);
-            newTerms.add(a);
+            double newCoef = terms.get(i).getExponent() * terms.get(i).getCoefficient(); //Finding the new Coefficient using the Power Rule
+            int newExp = terms.get(i).getExponent() - 1; //Continuing Power Rule
+            Term a = new Term (newCoef,newExp); //Building a new term with the new Coef and Exp
+            newTerms.add(a); //Adding the new Term to the array of temrms
         }
         
-        return new Polynomial(newTerms);
+        return new Polynomial(newTerms); //Return the list as a Polynomial
         
     }
     
@@ -162,7 +163,51 @@ public class Polynomial {
         return newPolynomial;
 
     }
-
+    
+    //Finding the Positive End Behaviour of the polynomial
+    public String posEndBehaviour () {
+        double posEnd = 0; //Set originial value
+        for (int i = 0; i < terms.size(); i++) {
+            posEnd = posEnd + (terms.get(i).getCoefficient() * Math.pow(1000, terms.get(i).getExponent())); //Check y when x = 1000
+        }
+        
+        if ((posEnd >= 10000)) { //If the value is greater than 10000, assume that it's heading toward positive infinity
+            return "+ infinity";
+        }
+        else if ((posEnd <= -10000)) { //If the value is greater than 10000, assume that it's heading toward negative infinity
+            return "- infinity"; 
+        }
+        
+        else { //Unless the numbers are approaching either infinities, it is heading toward a number
+            posEnd = Math.round(posEnd); //Round to find that number
+            String posEndBehaviour = String.valueOf(posEnd); //Make it into a string
+            return posEndBehaviour;
+        }
+     }
+    
+    
+    //Finding the Negative End Behaviour of the polynomial
+    public String negEndBehaviour () {
+        double negEnd = 0;
+        for (int i = 0; i < terms.size(); i++) {
+            negEnd = negEnd + (terms.get(i).getCoefficient() * Math.pow(-1000, terms.get(i).getExponent())); //Check y when x = -1000
+        }
+        
+        if ((negEnd >= 10000)) { //If the value is greater than 10000, assume that it's heading toward positive infinity
+            return "+ infinity";
+        }
+        else if ((negEnd <= -10000)) {//If the value is greater than 10000, assume that it's heading toward negative infinity
+            return "- infinity";
+        }
+        
+        else {
+            negEnd = Math.round(negEnd);
+            String negEndBehaviour = String.valueOf(negEnd);
+            return negEndBehaviour;
+        }
+     }
+    
+    
     private void simplify() {
 
         ArrayList<Term> newTerms = new ArrayList<>();
