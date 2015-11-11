@@ -1,6 +1,8 @@
 package softwaredesign973.gui;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -10,6 +12,8 @@ import softwaredesign973.polynomial.Term;
 public class PolynomialInput extends JPanel {
     
     private GridBagConstraints c = new GridBagConstraints();
+
+    private MouseListener mouseListener;
     
     private int numTerms = 5;
     
@@ -18,6 +22,28 @@ public class PolynomialInput extends JPanel {
     public PolynomialInput() {
         
         super(new GridBagLayout());
+
+        mouseListener = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {}
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {}
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {}
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+
+            }
+        };
+
         update();
         
     }
@@ -42,6 +68,7 @@ public class PolynomialInput extends JPanel {
                 sign.setBackground(getBackground());
                 JSpinner coef = new JSpinner(new SpinnerNumberModel(0, 0, 999, 1));
                 coef.setBackground(getBackground());
+                coef.setEnabled(false);
                 JSpinner exp = new JSpinner(new SpinnerNumberModel(numTerms - i - 1, 0, 10, 1));
                 exp.setBackground(getBackground());
 
@@ -51,10 +78,9 @@ public class PolynomialInput extends JPanel {
 
             JComponent[] term = terms.get(i);
 
-            c.gridy = 0;
+            c.gridy = 1;
 
             c.gridx = i*4;
-            c.gridheight = 2;
             add(term[0], c);
 
             c.gridx = i*4+1;
@@ -64,7 +90,7 @@ public class PolynomialInput extends JPanel {
             add(new JLabel("x"), c);
 
             c.gridx = i*4+3;
-            c.gridheight = 1;
+            c.gridy = 0;
             add(term[2], c);
         }
         
