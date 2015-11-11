@@ -1,7 +1,11 @@
 package softwaredesign973;
 
+import softwaredesign973.gui.PolynomialInput;
 import softwaredesign973.polynomial.Polynomial;
 import softwaredesign973.polynomial.Term;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Jacob Sawatzky
@@ -25,7 +29,7 @@ public class SoftwareDesign973 {
         System.out.println("The product of them is: " + prod);
         
         Polynomial der = p1.getDerivative();
-        System.out.println("The derivitave of p1 is: " + der);
+        System.out.println("The derivative of p1 is: " + der);
         
     }
 }
