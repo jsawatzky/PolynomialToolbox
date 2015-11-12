@@ -20,8 +20,10 @@ public class PolynomialInput extends JPanel {
     private ArrayList<JComponent[]> terms = new ArrayList<>();
 
     public PolynomialInput() {
-        
+
         super(new GridBagLayout());
+
+        c.anchor = GridBagConstraints.WEST;
 
         mouseListener = new MouseListener() {
             @Override
@@ -36,10 +38,56 @@ public class PolynomialInput extends JPanel {
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
 
+                for (JComponent[] term: terms) {
+                    for (int i = 0; i < term.length; i++) {
+                        if (mouseEvent.getSource().equals(term[i])) {
+                            if (term[i] instanceof JLabel) {
+                                switch (i) {
+                                    case 0:
+                                        String text = ((JLabel) term[i]).getText();
+                                        term[i] = new JComboBox<>(new String[]{"+", "-"});
+                                        ((JComboBox)term[i]).setSelectedItem(text);
+                                        break;
+                                    case 1:
+                                        term[i] = new JSpinner(new SpinnerNumberModel(Integer.parseInt(((JLabel) term[i]).getText()), 0, 999, 1));
+                                        break;
+                                    case 2:
+                                        term[i] = new JSpinner(new SpinnerNumberModel(Integer.parseInt(((JLabel) term[i]).getText()), 0 , 10, 1));
+                                        break;
+                                }
+                                term[i].addMouseListener(mouseListener);
+                            }
+                        }
+                    }
+                }
+
+                update();
+
             }
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
+
+                System.out.println("1");
+                for (JComponent[] term: terms) {
+                    for (int i = 0; i < term.length; i++) {
+                        if (mouseEvent.getSource().equals(term[i])) {
+                            System.out.println("2");
+                            switch (i) {
+                                case 0:
+                                    term[i] = new JLabel(((JComboBox)term[i]).getSelectedItem().toString());
+                                    break;
+                                case 1:
+                                case 2:
+                                    term[i] = new JLabel(((JSpinner)term[i]).getValue().toString());
+                                    break;
+                            }
+                            term[i].addMouseListener(mouseListener);
+                        }
+                    }
+                }
+
+                update();
 
             }
         };
@@ -59,18 +107,19 @@ public class PolynomialInput extends JPanel {
     }
     
     private void update() {
+
+        removeAll();
         
         for (int i = 0; i < numTerms; i++) {
 
             if (terms.size() < i+1) {
 
-                JComboBox<String> sign = new JComboBox<>(new String[]{"+", "-"});
-                sign.setBackground(getBackground());
-                JSpinner coef = new JSpinner(new SpinnerNumberModel(0, 0, 999, 1));
-                coef.setBackground(getBackground());
-                coef.setEnabled(false);
-                JSpinner exp = new JSpinner(new SpinnerNumberModel(numTerms - i - 1, 0, 10, 1));
-                exp.setBackground(getBackground());
+                JLabel sign = new JLabel("+");
+                sign.addMouseListener(mouseListener);
+                JLabel coef = new JLabel("0");
+                coef.addMouseListener(mouseListener);
+                JLabel exp = new JLabel(numTerms - i - 1 + "");
+                exp.addMouseListener(mouseListener);
 
                 terms.add(new JComponent[]{sign, coef, exp});
 
@@ -93,6 +142,8 @@ public class PolynomialInput extends JPanel {
             c.gridy = 0;
             add(term[2], c);
         }
+
+        revalidate();
         
     }
     
