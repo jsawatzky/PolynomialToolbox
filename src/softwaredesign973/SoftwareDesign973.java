@@ -34,6 +34,7 @@ public class SoftwareDesign973 {
         System.out.println("The derivative of p1 is: " + der);
         System.out.println(p2.posEndBehaviour());
         System.out.println(p2.negEndBehaviour());
+<<<<<<< HEAD
         
         System.out.println(p2.yIntercept());
         System.out.println(p2.xIntercept().toString());
@@ -42,5 +43,9 @@ public class SoftwareDesign973 {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(new MainGUI().$$$getRootComponent$$$());
         frame.setVisible(true);
+=======
+        System.out.println(p2.yIntercept());
+        System.out.println(p2.xIntercept().toString());
+>>>>>>> origin/master
     }
 }
