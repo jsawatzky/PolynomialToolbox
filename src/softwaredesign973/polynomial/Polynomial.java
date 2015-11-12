@@ -1,5 +1,6 @@
 package softwaredesign973.polynomial;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -173,16 +174,16 @@ public class Polynomial {
         }
         
         if ((posEnd >= 10000)) { //If the value is greater than 10000, assume that it's heading toward positive infinity
-            return "+ infinity";
+            return "as x approaches positive infinity, f(x) approaches " + "+ infinity";
         }
         else if ((posEnd <= -10000)) { //If the value is greater than 10000, assume that it's heading toward negative infinity
-            return "- infinity"; 
+            return "as x approaches positive infinity, f(x) approaches " + "- infinity"; 
         }
         
         else { //Unless the numbers are approaching either infinities, it is heading toward a number
             posEnd = Math.round(posEnd); //Round to find that number
             String posEndBehaviour = String.valueOf(posEnd); //Make it into a string
-            return posEndBehaviour;
+            return "as x approaches positive infinity, f(x) approaches " + posEndBehaviour;
         }
      }
     
@@ -195,34 +196,43 @@ public class Polynomial {
         }
         
         if ((negEnd >= 10000)) { //If the value is greater than 10000, assume that it's heading toward positive infinity
-            return "+ infinity";
+            return "as x approaches negative infinity, f(x) approaches " + "+ infinity";
         }
         else if ((negEnd <= -10000)) {//If the value is greater than 10000, assume that it's heading toward negative infinity
-            return "- infinity";
+            return  "as x approaches negative infinity, f(x) approaches " + "- infinity";
         }
         
         else {
             negEnd = Math.round(negEnd);
             String negEndBehaviour = String.valueOf(negEnd);
-            return negEndBehaviour;
+            return  "as x approaches negative infinity, f(x) approaches " + negEndBehaviour;
         }
      }
     
+    
+    //Find the Y-Intercept of the Function
     public double yIntercept() {
-        double yInt = 0;
-        for (int i = terms.size()-1; i < terms.size(); i++) {
-            yInt = yInt + (terms.get(i).getCoefficient() * Math.pow(0, terms.get(i).getExponent()));
-        }
+        getFullPolynomial(); //Get the entire polynomial to find Constant at the end, (for cases such as 3x^2, where C = 0)
+        int last = terms.size()-1;
+        double yInt = terms.get(last).getCoefficient();
         return yInt;
     }
     
     
-        public ArrayList xIntercept() {
+    public ArrayList xIntercept() {
         ArrayList<Double> xInt = new ArrayList<>();
-        for (double i = terms.size()-1; i < terms.size(); i++) {
-            xInt = yInt + (terms.get(i).getCoefficient() * Math.pow(0, terms.get(i).getExponent()));
+        for (double i = -10; i < 10; i += 0.001) { //In a loop that checks all values from a certain domain to check if y = 0
+            double sum = 0;
+            for (int j = 0; j < terms.size(); j++) { //Get the y-value
+            sum += (terms.get(j).getCoefficient() * Math.pow(i, terms.get(j).getExponent()));
+            }
+            if (Math.abs(sum) < 0.005) { //If y is smaller than 0.005 consider as a root
+                DecimalFormat dec = new DecimalFormat("##.#####");
+                double val = Double.parseDouble(dec.format(i)); //Rounding
+                xInt.add(val); //Add :D
+            }
         }
-        return yInt;
+        return xInt;
     }
     
     

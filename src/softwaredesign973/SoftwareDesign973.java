@@ -32,6 +32,7 @@ public class SoftwareDesign973 {
         System.out.println("The derivative of p1 is: " + der);
         System.out.println(p2.posEndBehaviour());
         System.out.println(p2.negEndBehaviour());
-        
+        System.out.println(p2.yIntercept());
+        System.out.println(p2.xIntercept().toString());
     }
 }
