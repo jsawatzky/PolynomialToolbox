@@ -3,6 +3,7 @@ package softwaredesign973.polynomial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class Polynomial {
     
@@ -206,6 +207,23 @@ public class Polynomial {
             return negEndBehaviour;
         }
      }
+    
+    public double yIntercept() {
+        double yInt = 0;
+        for (int i = terms.size()-1; i < terms.size(); i++) {
+            yInt = yInt + (terms.get(i).getCoefficient() * Math.pow(0, terms.get(i).getExponent()));
+        }
+        return yInt;
+    }
+    
+    
+        public ArrayList xIntercept() {
+        ArrayList<Double> xInt = new ArrayList<>();
+        for (double i = terms.size()-1; i < terms.size(); i++) {
+            xInt = yInt + (terms.get(i).getCoefficient() * Math.pow(0, terms.get(i).getExponent()));
+        }
+        return yInt;
+    }
     
     
     private void simplify() {

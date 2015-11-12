@@ -30,6 +30,8 @@ public class SoftwareDesign973 {
         
         Polynomial der = p1.getDerivative();
         System.out.println("The derivative of p1 is: " + der);
+        System.out.println(p2.posEndBehaviour());
+        System.out.println(p2.negEndBehaviour());
         
     }
 }
