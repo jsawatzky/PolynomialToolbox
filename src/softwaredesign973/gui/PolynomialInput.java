@@ -154,8 +154,27 @@ public class PolynomialInput extends JPanel {
         for (int i = 0; i < numTerms; i++) {
             
             JComponent[] term = terms.get(i);
+
+            String sign;
+            String coef;
+            String vari;
+            if (term[0] instanceof JComboBox) {
+                sign = ((JComboBox)term[0]).getSelectedItem().toString();
+            } else {
+                sign = ((JLabel)term[0]).getText();
+            }
+            if (term[1] instanceof JSpinner) {
+                coef = ((JSpinner)term[1]).getValue().toString();
+            } else {
+                coef = ((JLabel)term[1]).getText();
+            }
+            if (term[2] instanceof JSpinner) {
+                vari = ((JSpinner)term[2]).getValue().toString();
+            } else {
+                vari = ((JLabel)term[2]).getText();
+            }
             
-            polyTerms[i] = new Term(Integer.parseInt((String)((JComboBox)term[0]).getSelectedItem()+((JSpinner)term[1]).getValue()), (Integer)((JSpinner)term[2]).getValue());
+            polyTerms[i] = new Term(Integer.parseInt(sign+coef), Integer.parseInt(vari));
             
         }
         

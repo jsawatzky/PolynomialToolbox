@@ -1,11 +1,13 @@
 package softwaredesign973;
 
+import softwaredesign973.gui.MainGUI;
 import softwaredesign973.gui.PolynomialInput;
 import softwaredesign973.polynomial.Polynomial;
 import softwaredesign973.polynomial.Term;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 
 /**
  * @author Jacob Sawatzky
@@ -33,5 +35,12 @@ public class SoftwareDesign973 {
         System.out.println(p2.posEndBehaviour());
         System.out.println(p2.negEndBehaviour());
         
+        System.out.println(p2.yIntercept());
+        System.out.println(p2.xIntercept().toString());
+
+        JFrame frame = new JFrame("TEST");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(new MainGUI().$$$getRootComponent$$$());
+        frame.setVisible(true);
     }
 }
