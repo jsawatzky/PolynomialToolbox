@@ -1,6 +1,8 @@
 package softwaredesign973.gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -16,8 +18,29 @@ public class PolynomialInput extends JPanel {
     private MouseListener mouseListener;
     
     private int numTerms = 5;
-    
+
+    private JTextField name = new JTextField("f", 1);
     private ArrayList<JComponent[]> terms = new ArrayList<>();
+    private Color color = Color.BLUE;
+    private JButton colorChooser = new JButton("Change Color", new Icon() {
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.setColor(color);
+            g.fillRect(x, y, getIconWidth(), getIconHeight());
+        }
+
+        @Override
+        public int getIconWidth() {
+            return 10;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return 10;
+        }
+    });
+    private JButton removeTerm = new JButton("Remove Term");
+    private JButton addTerm = new JButton("Add Term");
 
     public PolynomialInput() {
 
@@ -45,8 +68,7 @@ public class PolynomialInput extends JPanel {
                                 switch (i) {
                                     case 0:
                                         String text = ((JLabel) term[i]).getText();
-                                        term[i] = new JComboBox<>(new String[]{"+", "-"});
-                                        ((JComboBox)term[i]).setSelectedItem(text);
+                                        term[i] = new JSpinner(new SpinnerCircularModel(new String[]{"+", "-"}));
                                         break;
                                     case 1:
                                         term[i] = new JSpinner(new SpinnerNumberModel(Integer.parseInt(((JLabel) term[i]).getText()), 0, 999, 1));
@@ -61,27 +83,15 @@ public class PolynomialInput extends JPanel {
                     }
                 }
 
-                update();
-
             }
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
 
-                System.out.println("1");
                 for (JComponent[] term: terms) {
                     for (int i = 0; i < term.length; i++) {
                         if (mouseEvent.getSource().equals(term[i])) {
-                            System.out.println("2");
-                            switch (i) {
-                                case 0:
-                                    term[i] = new JLabel(((JComboBox)term[i]).getSelectedItem().toString());
-                                    break;
-                                case 1:
-                                case 2:
-                                    term[i] = new JLabel(((JSpinner)term[i]).getValue().toString());
-                                    break;
-                            }
+                            term[i] = new JLabel(((JSpinner)term[i]).getValue().toString());
                             term[i].addMouseListener(mouseListener);
                         }
                     }
@@ -92,23 +102,70 @@ public class PolynomialInput extends JPanel {
             }
         };
 
+        colorChooser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Color newColor = JColorChooser.showDialog(null, "Pick a new Color", color);
+                if (newColor != null) {
+                    color = newColor;
+                }
+                update();
+            }
+        });
+        addTerm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTerm();
+            }
+        });
+        removeTerm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeTerm();
+            }
+        });
+
         update();
         
     }
     
     public void addTerm() {
-        numTerms++;
+        if (numTerms < 10) {
+            numTerms++;
+            removeTerm.setEnabled(true);
+        }
+        if (numTerms == 10) {
+            addTerm.setEnabled(false);
+        }
         update();
     }
     
     public void removeTerm() {
-        numTerms--;
+        if (numTerms > 1) {
+            numTerms--;
+            addTerm.setEnabled(true);
+        }
+        if (numTerms == 1) {
+            removeTerm.setEnabled(false);
+        }
         update();
     }
     
     private void update() {
 
         removeAll();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(0, 0, 0, 0);
+
+        add(new JLabel("New Polynomial: "), c);
+
+        c.gridx += 1;
+        add(name, c);
+
+        c.gridx += 1;
+        add(new JLabel("(x) = "), c);
         
         for (int i = 0; i < numTerms; i++) {
 
@@ -127,27 +184,50 @@ public class PolynomialInput extends JPanel {
 
             JComponent[] term = terms.get(i);
 
-            c.gridy = 1;
-
-            c.gridx = i*4;
+            c.gridx += 1;
+            c.insets = new Insets(0, 5, 0, 5);
             add(term[0], c);
 
-            c.gridx = i*4+1;
+            c.gridx += 1;
+            c.insets = new Insets(0, 0, 0, 0);
             add(term[1], c);
 
-            c.gridx = i*4+2;
-            add(new JLabel("x"), c);
+            c.gridx += 1;
+            add(new JLabel("x^"), c);
 
-            c.gridx = i*4+3;
-            c.gridy = 0;
+            c.gridx += 1;
             add(term[2], c);
         }
+
+        c.gridx += 1;
+        c.insets = new Insets(0, 15, 0, 0);
+        add(removeTerm, c);
+
+        c.gridx += 1;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(addTerm, c);
+
+        c.gridx += 1;
+        c.insets = new Insets(0, 15, 0, 0);
+        add(colorChooser, c);
 
         revalidate();
         
     }
+
+    public void reset() {
+
+        numTerms = 5;
+
+        name = new JTextField("f", 1);
+        terms = new ArrayList<>();
+        color = Color.BLUE;
+
+        update();
+
+    }
     
-    public Polynomial getPolynomial() {
+    public Function getFuntion() {
         
         Term[] polyTerms = new Term[numTerms];
         
@@ -158,8 +238,8 @@ public class PolynomialInput extends JPanel {
             String sign;
             String coef;
             String vari;
-            if (term[0] instanceof JComboBox) {
-                sign = ((JComboBox)term[0]).getSelectedItem().toString();
+            if (term[0] instanceof JSpinner) {
+                sign = ((JSpinner)term[0]).getValue().toString();
             } else {
                 sign = ((JLabel)term[0]).getText();
             }
@@ -178,7 +258,7 @@ public class PolynomialInput extends JPanel {
             
         }
         
-        return new Polynomial(polyTerms);
+        return new Function(name.getText(), new Polynomial(polyTerms), color);
         
     }
     

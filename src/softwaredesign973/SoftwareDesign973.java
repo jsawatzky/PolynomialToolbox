@@ -37,11 +37,6 @@ public class SoftwareDesign973 {
         
         System.out.println(p2.yIntercept());
         System.out.println(p2.xIntercept().toString());
-
-        JFrame frame = new JFrame("TEST");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new MainGUI().$$$getRootComponent$$$());
-        frame.setVisible(true);
         
     }
 }

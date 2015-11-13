@@ -22,6 +22,26 @@ public class Function {
 
     }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Polynomial getPolynomial() {
+        return p;
+    }
+
     @Override
     public String toString() {
         return name + "(x) = " + p;

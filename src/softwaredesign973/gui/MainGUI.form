@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="softwaredesign973.gui.MainGUI">
-  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridBagLayout">
+  <grid id="27dc6" binding="contentPane" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="20" y="20" width="820" height="433"/>
+      <xy x="20" y="20" width="893" height="433"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
       <component id="b93dc" class="softwaredesign973.gui.PolynomialInput" binding="polynomialInput">
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="1" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="0.1"/>
         </constraints>
         <properties/>
@@ -20,25 +20,8 @@
           <gridbag weightx="0.1" weighty="0.1"/>
         </constraints>
         <properties>
-          <text value="New Polynomial"/>
-        </properties>
-      </component>
-      <component id="115e1" class="javax.swing.JButton" binding="removeTerm">
-        <constraints>
-          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.05" weighty="0.0"/>
-        </constraints>
-        <properties>
-          <text value="-"/>
-        </properties>
-      </component>
-      <component id="23c53" class="javax.swing.JButton" binding="addTerm">
-        <constraints>
-          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.05" weighty="0.0"/>
-        </constraints>
-        <properties>
-          <text value="+"/>
+          <font size="18"/>
+          <text value="Polynomial Toolbox"/>
         </properties>
       </component>
       <scrollpane id="1975a" binding="listPane">
@@ -48,7 +31,14 @@
         </constraints>
         <properties/>
         <border type="none"/>
-        <children/>
+        <children>
+          <grid id="7abb2" binding="list" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints/>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
+        </children>
       </scrollpane>
       <component id="e9a9e" class="javax.swing.JButton" binding="addPolynomial">
         <constraints>
@@ -66,7 +56,15 @@
         </constraints>
         <properties/>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="75b8d" class="softwaredesign973.gui.Graph" binding="graph1" default-binding="true">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="1.0"/>
+            </constraints>
+            <properties/>
+          </component>
+        </children>
       </grid>
       <component id="b009" class="javax.swing.JTextArea" binding="info">
         <constraints>

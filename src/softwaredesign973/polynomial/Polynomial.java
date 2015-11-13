@@ -222,17 +222,25 @@ public class Polynomial {
     public ArrayList xIntercept() {
         ArrayList<Double> xInt = new ArrayList<>();
         for (double i = -10; i < 10; i += 0.001) { //In a loop that checks all values from a certain domain to check if y = 0
-            double sum = 0;
-            for (int j = 0; j < terms.size(); j++) { //Get the y-value
-            sum += (terms.get(j).getCoefficient() * Math.pow(i, terms.get(j).getExponent()));
-            }
-            if (Math.abs(sum) < 0.005) { //If y is smaller than 0.005 consider as a root
+            double val = evaluateAt(i);
+            if (Math.abs(val) < 0.005) { //If y is smaller than 0.005 consider as a root
                 DecimalFormat dec = new DecimalFormat("##.#####");
-                double val = Double.parseDouble(dec.format(i)); //Rounding
-                xInt.add(val); //Add :D
+                double val2 = Double.parseDouble(dec.format(i)); //Rounding
+                xInt.add(val2); //Add :D
             }
         }
         return xInt;
+    }
+
+    public double evaluateAt(double x) {
+
+        double sum = 0;
+        for (int i = 0; i < terms.size(); i++) { //Get the y-value
+            sum += (terms.get(i).getCoefficient() * Math.pow(x, terms.get(i).getExponent()));
+        }
+
+        return sum;
+
     }
     
     
