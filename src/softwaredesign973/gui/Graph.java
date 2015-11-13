@@ -27,7 +27,6 @@ public class Graph extends JPanel {
     private int lastMouseClickX, lastMouseClickY;
 
     private double xCenter = 0, yCenter = 0;
-    private int xOffset, yOffset;
     private double scale = 3;
     private int size;
 
@@ -126,11 +125,7 @@ public class Graph extends JPanel {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        if (size == 0) {
-            size = Math.min(getWidth(), getHeight());
-            xOffset = (getWidth() - size) / 2;
-            yOffset = (getHeight() - size) / 2;
-        }
+        size = Math.min(getWidth(), getHeight());
 
         g.setStroke(new BasicStroke(6));
         g.setColor(Color.BLACK);
@@ -201,25 +196,25 @@ public class Graph extends JPanel {
 
     private double getPlanePointX(int Px) {
 
-        return (((Px-xOffset) - (size/2)) / (size/scale)) + xCenter;
+        return ((Px-(getWidth()/2)) * (scale/size)) + xCenter;
 
     }
 
     private double getPlanePointY(int Py) {
 
-        return (((Py-yOffset) - (size/2)) / (size/scale)) + yCenter;
+        return (((Py-(getHeight()/2))*-1) * (scale/size)) + yCenter;
 
     }
 
     private int getPixelPointX(double x) {
 
-        return (int)((x - xCenter) * (size/scale) + (size/2) + xOffset);
+        return (int)(((x-xCenter) * (size/scale)) + (getWidth()/2));
 
     }
 
     private int getPixelPointY(double y) {
 
-        return (int)((y - yCenter) * (size/scale) + (size/2) + yOffset);
+        return (int)(((y-yCenter) * (size/scale)) + ((getHeight()/2)))*-1;
 
     }
 

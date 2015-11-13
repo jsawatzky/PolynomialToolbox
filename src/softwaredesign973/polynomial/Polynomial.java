@@ -172,7 +172,6 @@ public class Polynomial {
         Polynomial der = getDerivative();
 
         double m = der.evaluateAt(x);
-        m *= -1;
 
         double b = evaluateAt(x) - m*x;
 
@@ -253,7 +252,7 @@ public class Polynomial {
             sum += (terms.get(i).getCoefficient() * Math.pow(x, terms.get(i).getExponent()));
         }
 
-        return sum*-1;
+        return sum;
 
     }
     
