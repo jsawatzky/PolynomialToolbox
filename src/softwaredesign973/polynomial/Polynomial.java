@@ -1,5 +1,6 @@
 package softwaredesign973.polynomial;
 
+import java.lang.management.PlatformLoggingMXBean;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,22 +96,6 @@ public class Polynomial {
 
     }
     
-    //Finding the derivative of the Polynomial
-    public Polynomial getDerivative() {
-        
-        ArrayList<Term> newTerms = new ArrayList<>(); //New List of Terms
-        
-        for (int i = 0; i < terms.size(); i++) {
-            double newCoef = terms.get(i).getExponent() * terms.get(i).getCoefficient(); //Finding the new Coefficient using the Power Rule
-            int newExp = terms.get(i).getExponent() - 1; //Continuing Power Rule
-            Term a = new Term (newCoef,newExp); //Building a new term with the new Coef and Exp
-            newTerms.add(a); //Adding the new Term to the array of temrms
-        }
-        
-        return new Polynomial(newTerms); //Return the list as a Polynomial
-        
-    }
-    
     public void subtract(Polynomial other) {
 
         other.multiply(new Polynomial(new Term[] {new Term(-1, 0)}));
@@ -163,6 +148,35 @@ public class Polynomial {
         Polynomial newPolynomial = new Polynomial(newTerms);
 
         return newPolynomial;
+
+    }
+
+    //Finding the derivative of the Polynomial
+    public Polynomial getDerivative() {
+
+        ArrayList<Term> newTerms = new ArrayList<>(); //New List of Terms
+
+        for (int i = 0; i < terms.size(); i++) {
+            double newCoef = terms.get(i).getExponent() * terms.get(i).getCoefficient(); //Finding the new Coefficient using the Power Rule
+            int newExp = terms.get(i).getExponent() - 1; //Continuing Power Rule
+            Term a = new Term (newCoef,newExp); //Building a new term with the new Coef and Exp
+            newTerms.add(a); //Adding the new Term to the array of temrms
+        }
+
+        return new Polynomial(newTerms); //Return the list as a Polynomial
+
+    }
+
+    public Polynomial getTangentAt(double x) {
+
+        Polynomial der = getDerivative();
+
+        double m = der.evaluateAt(x);
+        m *= -1;
+
+        double b = evaluateAt(x) - m*x;
+
+        return new Polynomial(new Term[] {new Term(m, 1), new Term(b, 0)});
 
     }
     
@@ -239,7 +253,7 @@ public class Polynomial {
             sum += (terms.get(i).getCoefficient() * Math.pow(x, terms.get(i).getExponent()));
         }
 
-        return sum;
+        return sum*-1;
 
     }
     

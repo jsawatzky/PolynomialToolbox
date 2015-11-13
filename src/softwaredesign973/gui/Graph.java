@@ -20,6 +20,8 @@ public class Graph extends JPanel {
     private MouseMotionListener mouseMotionListener;
     private MouseWheelListener mouseWheelListener;
 
+    private BufferedImage lastImage;
+
     private boolean mouseInside;
     private int mouseX, mouseY;
     private int lastMouseClickX, lastMouseClickY;
@@ -65,19 +67,24 @@ public class Graph extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
 
-                int newX = e.getX() - lastMouseClickX;
-                int newY = e.getY() - lastMouseClickY;
+                double xChange = getPlanePointX(e.getX()) - getPlanePointX(lastMouseClickX);
+                double yChange = getPlanePointY(e.getY()) - getPlanePointY(lastMouseClickY);
 
-                lastMouseClickX += newX;
-                lastMouseClickY += newY;
+                lastMouseClickX = e.getX();
+                lastMouseClickY = e.getY();
 
-                xCenter += newX;
-                yCenter += newY;
+                xCenter -= xChange;
+                yCenter -= yChange;
+
+                update();
+
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (mouseInside) {
+                    mouseX = e.getX();
+                    mouseY = e.getY();
                     update();
                 }
             }
@@ -87,11 +94,11 @@ public class Graph extends JPanel {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if (e.getWheelRotation() < 0) {
-                    scale /= 2;
+                    scale /= 1.5;
                 } else {
-                    scale *= 2;
+                    scale *= 1.5;
                 }
-                System.out.println(scale);
+                update();
             }
         };
         this.addMouseWheelListener(mouseWheelListener);
@@ -111,7 +118,6 @@ public class Graph extends JPanel {
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
-        g.setStroke(new BasicStroke(6));
 
 //        g.setTransform(transform);
 
@@ -120,33 +126,55 @@ public class Graph extends JPanel {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        size = Math.min(getWidth(), getHeight());
-        xOffset = (getWidth() - size) / 2;
-        yOffset = (getHeight() - size) / 2;
+        if (size == 0) {
+            size = Math.min(getWidth(), getHeight());
+            xOffset = (getWidth() - size) / 2;
+            yOffset = (getHeight() - size) / 2;
+        }
 
+        g.setStroke(new BasicStroke(6));
         g.setColor(Color.BLACK);
         g.fillRect(getPixelPointX(0), 0, 2, getHeight());
         g.fillRect(0, getPixelPointY(0), getWidth(), 2);
+        g.setStroke(new BasicStroke(2));
 
-        for (int Px = 0; Px < getWidth(); Px++) {
+        for (Function f: functions) {
 
-            double x = getPlanePointX(Px);
+            Polynomial p = f.getPolynomial();
 
-            for (Function f: functions) {
+            double lastY = 0;
 
-                Polynomial p = f.getPolynomial();
+            for (int Px = 0; Px < getWidth(); Px++) {
 
-                double y = p.evaluateAt(x)*-1;
+                double x = getPlanePointX(Px);
+
+                double y = p.evaluateAt(x);
                 int Py = getPixelPointY(y);
 
                 if (this.contains(Px, Py)) {
                     g.setColor(f.getColor());
                     g.fillRect(Px, Py, 1, 1);
+                    if (Px != 0) {
+                        g.drawLine(Px-1, getPixelPointY(lastY), Px, Py);
+                    }
+                    if (Px == mouseX && Math.abs(Py-mouseY) < 5) {
+
+                        Polynomial tangent = p.getTangentAt(x);
+
+                        g.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[] {10}, 0));
+                        g.drawLine(0, getPixelPointY(tangent.evaluateAt(getPlanePointX(0))), getWidth(), getPixelPointY(tangent.evaluateAt(getPlanePointX(getWidth()))));
+                        g.setStroke(new BasicStroke(2));
+
+                    }
                 }
+
+                lastY = y;
 
             }
 
         }
+
+        lastImage = image;
 
         Graphics g2 = this.getGraphics();
         g2.drawImage(image, 0, 0, null);
@@ -157,7 +185,8 @@ public class Graph extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        update();
+        super.paint(g);
+        g.drawImage(lastImage, 0, 0, null);
     }
 
     public void setFunctions(ArrayList<Function> functions) {
