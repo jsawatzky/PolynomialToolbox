@@ -1,7 +1,5 @@
 package softwaredesign973.gui;
 
-import softwaredesign973.polynomial.Polynomial;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,20 +18,22 @@ public class MainGUI {
     private JTextArea info;
     private JScrollPane listPane;
     private JPanel graph;
-    private JPanel operations;
     private JButton deletePolynomial;
     private JPanel list;
     private Graph graph1;
 
-    private HashMap<JCheckBox, Function> functions = new HashMap<>();
+    private ButtonGroup functionButtons = new ButtonGroup();
+    private HashMap<JRadioButton, Function> functions = new HashMap<>();
 
     public MainGUI() {
         $$$setupUI$$$();
+        info.setTabSize(30);
+        info.setFont(new Font("Times New Roman", Font.PLAIN, 15));
         addPolynomial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Function f = polynomialInput.getFuntion();
-                JCheckBox checkBox = new JCheckBox(f.toString(), new Icon() {
+                JRadioButton radioButton = new JRadioButton(f.toString(), new Icon() {
                     @Override
                     public void paintIcon(Component c, Graphics g, int x, int y) {
                         g.setColor(f.getColor());
@@ -50,7 +50,7 @@ public class MainGUI {
                         return 10;
                     }
                 }, true);
-                checkBox.setSelectedIcon(new Icon() {
+                radioButton.setSelectedIcon(new Icon() {
                     @Override
                     public void paintIcon(Component c, Graphics g, int x, int y) {
                         g.setColor(f.getColor());
@@ -67,24 +67,27 @@ public class MainGUI {
                         return 10;
                     }
                 });
-                checkBox.addActionListener(new ActionListener() {
+                radioButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (((JCheckBox) e.getSource()).isSelected()) {
+                        if (((JRadioButton) e.getSource()).isSelected()) {
                             deletePolynomial.setEnabled(true);
-                        } else if (getSelectedFunctions().size() == 0) {
-                            deletePolynomial.setEnabled(false);
                         }
-                        graph1.setFunctions(getSelectedFunctions());
+                        info.setText(functions.get(getSelectedFunction()).getPolynomial().getInfo());
+                        graph1.setFunction(functions.get(getSelectedFunction()));
                         graph1.update();
                         contentPane.revalidate();
                     }
                 });
 
-                functions.put(checkBox, f);
-                list.add(checkBox);
+                functions.put(radioButton, f);
+                list.add(radioButton);
+                functionButtons.add(radioButton);
+                functionButtons.setSelected(radioButton.getModel(), true);
 
-                graph1.setFunctions(getSelectedFunctions());
+                info.setText(f.getPolynomial().getInfo());
+
+                graph1.setFunction(f);
                 graph1.update();
 
                 deletePolynomial.setEnabled(true);
@@ -98,15 +101,17 @@ public class MainGUI {
         deletePolynomial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (JCheckBox checkBox : getSelectedCheckBoxes()) {
 
-                    functions.remove(checkBox);
-                    list.remove(checkBox);
+                JRadioButton radioButton = getSelectedFunction();
 
-                    graph1.setFunctions(getSelectedFunctions());
-                    graph1.update();
+                functions.remove(radioButton);
+                list.remove(radioButton);
+                functionButtons.remove(radioButton);
 
-                }
+                graph1.setFunction(functions.get(getSelectedFunction()));
+                graph1.update();
+
+                deletePolynomial.setEnabled(false);
 
                 contentPane.revalidate();
 
@@ -114,39 +119,19 @@ public class MainGUI {
         });
     }
 
-    public ArrayList<Function> getSelectedFunctions() {
+    public JRadioButton getSelectedFunction() {
 
-        ArrayList<Function> selected = new ArrayList<>();
+        for (JRadioButton radioButton : functions.keySet()) {
 
-        for (JCheckBox checkBox : functions.keySet()) {
+            if (radioButton.isSelected()) {
 
-            if (checkBox.isSelected()) {
-
-                selected.add(functions.get(checkBox));
+                return radioButton;
 
             }
 
         }
 
-        return selected;
-
-    }
-
-    public ArrayList<JCheckBox> getSelectedCheckBoxes() {
-
-        ArrayList<JCheckBox> selected = new ArrayList<>();
-
-        for (JCheckBox checkBox : functions.keySet()) {
-
-            if (checkBox.isSelected()) {
-
-                selected.add(checkBox);
-
-            }
-
-        }
-
-        return selected;
+        return null;
 
     }
 
@@ -162,7 +147,11 @@ public class MainGUI {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
+
+        list = new JPanel();
+
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+
     }
 
     /**
@@ -173,6 +162,7 @@ public class MainGUI {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         contentPane = new JPanel();
         contentPane.setLayout(new GridBagLayout());
         polynomialInput = new PolynomialInput();
@@ -205,8 +195,6 @@ public class MainGUI {
         gbc.weighty = 0.58;
         gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(listPane, gbc);
-        list = new JPanel();
-        list.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         listPane.setViewportView(list);
         addPolynomial = new JButton();
         addPolynomial.setText("Add");
@@ -244,16 +232,6 @@ public class MainGUI {
         gbc.weighty = 0.3;
         gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(info, gbc);
-        operations = new JPanel();
-        operations.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 3;
-        gbc.gridy = 2;
-        gbc.gridwidth = 4;
-        gbc.gridheight = 2;
-        gbc.weighty = 0.1;
-        gbc.fill = GridBagConstraints.BOTH;
-        contentPane.add(operations, gbc);
         deletePolynomial = new JButton();
         deletePolynomial.setEnabled(false);
         deletePolynomial.setText("Delete Selected");

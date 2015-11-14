@@ -31,6 +31,10 @@ public class Polynomial {
         //Makes the terms into an array
         return (Term[]) terms.toArray();
     }
+
+    public int getDegree() {
+        return terms.get(0).getExponent();
+    }
     
     public Polynomial getFullPolynomial() {
         //Getting full polynomial for the purpose of sorting out and simplifying
@@ -112,6 +116,7 @@ public class Polynomial {
 
         ArrayList<Term> newTerms = new ArrayList<>();
 
+        //Same as adding but with negative polynomial
         newTerms.addAll(p1.terms);
         Polynomial p2New = multiply(p2, new Polynomial(new Term[] {new Term(-1, 0)}));
         newTerms.addAll(p2New.terms);
@@ -121,11 +126,13 @@ public class Polynomial {
         return newPolynomial;
 
     }
-    
+
+    //Gets product of this polynomial and given polynomial
     public void multiply(Polynomial other) {
         
         ArrayList<Term> newTerms = new ArrayList<>();
 
+        //Multiplys each term by each term in the other
         for (Term t1: this.terms) {
             for (Term t2: other.terms) {
                 newTerms.add(new Term(t1.getCoefficient()*t2.getCoefficient(), t1.getExponent()+t2.getExponent()));
@@ -137,11 +144,13 @@ public class Polynomial {
         sort();
 
     }
-    
+
+    //Gets product of two given polynomials
     public static Polynomial multiply(Polynomial p1, Polynomial p2) {
 
         ArrayList<Term> newTerms = new ArrayList<>();
 
+        //Multiplys each term by each term in the other
         for (Term t1: p1.terms) {
             for (Term t2: p2.terms) {
                 newTerms.add(new Term(t1.getCoefficient()*t2.getCoefficient(), t1.getExponent()+t2.getExponent()));
@@ -190,16 +199,16 @@ public class Polynomial {
         }
         
         if ((posEnd >= 10000)) { //If the value is greater than 10000, assume that it's heading toward positive infinity
-            return "as x approaches positive infinity, f(x) approaches " + "+ infinity";
+            return "as x approaches +infinity, f(x) approaches " + "+infinity";
         }
         else if ((posEnd <= -10000)) { //If the value is greater than 10000, assume that it's heading toward negative infinity
-            return "as x approaches positive infinity, f(x) approaches " + "- infinity"; 
+            return "as x approaches +infinity, f(x) approaches " + "-infinity";
         }
         
         else { //Unless the numbers are approaching either infinities, it is heading toward a number
             posEnd = Math.round(posEnd); //Round to find that number
             String posEndBehaviour = String.valueOf(posEnd); //Make it into a string
-            return "as x approaches positive infinity, f(x) approaches " + posEndBehaviour;
+            return "as x approaches +infinity, f(x) approaches " + posEndBehaviour;
         }
      }
     
@@ -212,16 +221,16 @@ public class Polynomial {
         }
         
         if ((negEnd >= 10000)) { //If the value is greater than 10000, assume that it's heading toward positive infinity
-            return "as x approaches negative infinity, f(x) approaches " + "+ infinity";
+            return "as x approaches -infinity, f(x) approaches " + "+infinity";
         }
         else if ((negEnd <= -10000)) {//If the value is greater than 10000, assume that it's heading toward negative infinity
-            return  "as x approaches negative infinity, f(x) approaches " + "- infinity";
+            return  "as x approaches -infinity, f(x) approaches " + "-infinity";
         }
         
         else {
             negEnd = Math.round(negEnd);
             String negEndBehaviour = String.valueOf(negEnd);
-            return  "as x approaches negative infinity, f(x) approaches " + negEndBehaviour;
+            return  "as x approaches -infinity, f(x) approaches " + negEndBehaviour;
         }
      }
     
@@ -235,11 +244,11 @@ public class Polynomial {
     }
     
     
-    public ArrayList xIntercept() {
+    public ArrayList<Double> xIntercept() {
         ArrayList<Double> xInt = new ArrayList<>();
         for (double i = -10; i < 10; i += 0.001) { //In a loop that checks all values from a certain domain to check if y = 0
             double val = evaluateAt(i);
-            if (Math.abs(val) < 0.005) { //If y is smaller than 0.005 consider as a root
+            if (Math.abs(val) < 0.0000000005) { //If y is smaller than 0.0000000005 consider as a root
                 DecimalFormat dec = new DecimalFormat("##.#####");
                 double val2 = Double.parseDouble(dec.format(i)); //Rounding
                 xInt.add(val2); //Add :D
@@ -257,6 +266,30 @@ public class Polynomial {
         }
 
         return sum;
+
+    }
+
+    public String getInfo() {
+
+        StringBuilder info = new StringBuilder();
+
+        info.append(toString());
+        info.append("\t");
+        info.append("Degree: " + getDegree());
+        info.append("\t");
+        info.append("Derivative: " + getDerivative());
+        info.append("\n");
+        info.append("Real roots: " + Arrays.toString(xIntercept().toArray()));
+        info.append("\t");
+        info.append("y-intercept: " + yIntercept());
+        info.append("\n");
+        info.append("End Behaviours:");
+        info.append("\n");
+        info.append(posEndBehaviour());
+        info.append("\n");
+        info.append(negEndBehaviour());
+
+        return info.toString();
 
     }
     

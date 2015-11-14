@@ -1,10 +1,7 @@
 package softwaredesign973.gui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -12,15 +9,13 @@ import softwaredesign973.polynomial.Polynomial;
 import softwaredesign973.polynomial.Term;
 
 public class PolynomialInput extends JPanel {
+
+    //To confusing to document
     
     private GridBagConstraints c = new GridBagConstraints();
 
-    private MouseListener mouseListener;
-    
-    private int numTerms = 5;
-
     private JTextField name = new JTextField("f", 1);
-    private ArrayList<JComponent[]> terms = new ArrayList<>();
+    private ArrayList<JSpinner[]> terms = new ArrayList<>();
     private Color color = Color.BLUE;
     private JButton colorChooser = new JButton("Change Color", new Icon() {
         @Override
@@ -39,68 +34,10 @@ public class PolynomialInput extends JPanel {
             return 10;
         }
     });
-    private JButton removeTerm = new JButton("Remove Term");
-    private JButton addTerm = new JButton("Add Term");
 
     public PolynomialInput() {
 
         super(new GridBagLayout());
-
-        c.anchor = GridBagConstraints.WEST;
-
-        mouseListener = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent) {}
-
-            @Override
-            public void mousePressed(MouseEvent mouseEvent) {}
-
-            @Override
-            public void mouseReleased(MouseEvent mouseEvent) {}
-
-            @Override
-            public void mouseEntered(MouseEvent mouseEvent) {
-
-                for (JComponent[] term: terms) {
-                    for (int i = 0; i < term.length; i++) {
-                        if (mouseEvent.getSource().equals(term[i])) {
-                            if (term[i] instanceof JLabel) {
-                                switch (i) {
-                                    case 0:
-                                        String text = ((JLabel) term[i]).getText();
-                                        term[i] = new JSpinner(new SpinnerCircularModel(new String[]{"+", "-"}));
-                                        break;
-                                    case 1:
-                                        term[i] = new JSpinner(new SpinnerNumberModel(Integer.parseInt(((JLabel) term[i]).getText()), 0, 999, 1));
-                                        break;
-                                    case 2:
-                                        term[i] = new JSpinner(new SpinnerNumberModel(Integer.parseInt(((JLabel) term[i]).getText()), 0 , 10, 1));
-                                        break;
-                                }
-                                term[i].addMouseListener(mouseListener);
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent mouseEvent) {
-
-                for (JComponent[] term: terms) {
-                    for (int i = 0; i < term.length; i++) {
-                        if (mouseEvent.getSource().equals(term[i])) {
-                            term[i] = new JLabel(((JSpinner)term[i]).getValue().toString());
-                            term[i].addMouseListener(mouseListener);
-                        }
-                    }
-                }
-
-                update();
-
-            }
-        };
 
         colorChooser.addActionListener(new ActionListener() {
             @Override
@@ -112,43 +49,9 @@ public class PolynomialInput extends JPanel {
                 update();
             }
         });
-        addTerm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addTerm();
-            }
-        });
-        removeTerm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeTerm();
-            }
-        });
 
         update();
         
-    }
-    
-    public void addTerm() {
-        if (numTerms < 10) {
-            numTerms++;
-            removeTerm.setEnabled(true);
-        }
-        if (numTerms == 10) {
-            addTerm.setEnabled(false);
-        }
-        update();
-    }
-    
-    public void removeTerm() {
-        if (numTerms > 1) {
-            numTerms--;
-            addTerm.setEnabled(true);
-        }
-        if (numTerms == 1) {
-            removeTerm.setEnabled(false);
-        }
-        update();
     }
     
     private void update() {
@@ -167,22 +70,19 @@ public class PolynomialInput extends JPanel {
         c.gridx += 1;
         add(new JLabel("(x) = "), c);
         
-        for (int i = 0; i < numTerms; i++) {
+        for (int i = 0; i < 5; i++) {
 
             if (terms.size() < i+1) {
 
-                JLabel sign = new JLabel("+");
-                sign.addMouseListener(mouseListener);
-                JLabel coef = new JLabel("0");
-                coef.addMouseListener(mouseListener);
-                JLabel exp = new JLabel(numTerms - i - 1 + "");
-                exp.addMouseListener(mouseListener);
+                JSpinner sign = new JSpinner(new SpinnerCircularModel(new String[]{"+", "-"}));
+                JSpinner coef = new JSpinner(new SpinnerNumberModel(0, 0, 999, 1));
+                JSpinner exp = new JSpinner(new SpinnerNumberModel(5 - i, 0, 10, 1));
 
-                terms.add(new JComponent[]{sign, coef, exp});
+                terms.add(new JSpinner[]{sign, coef, exp});
 
             }
 
-            JComponent[] term = terms.get(i);
+            JSpinner[] term = terms.get(i);
 
             c.gridx += 1;
             c.insets = new Insets(0, 5, 0, 5);
@@ -201,14 +101,6 @@ public class PolynomialInput extends JPanel {
 
         c.gridx += 1;
         c.insets = new Insets(0, 15, 0, 0);
-        add(removeTerm, c);
-
-        c.gridx += 1;
-        c.insets = new Insets(0, 0, 0, 0);
-        add(addTerm, c);
-
-        c.gridx += 1;
-        c.insets = new Insets(0, 15, 0, 0);
         add(colorChooser, c);
 
         revalidate();
@@ -216,8 +108,6 @@ public class PolynomialInput extends JPanel {
     }
 
     public void reset() {
-
-        numTerms = 5;
 
         name = new JTextField("f", 1);
         terms = new ArrayList<>();
@@ -229,30 +119,15 @@ public class PolynomialInput extends JPanel {
     
     public Function getFuntion() {
         
-        Term[] polyTerms = new Term[numTerms];
+        Term[] polyTerms = new Term[5];
         
-        for (int i = 0; i < numTerms; i++) {
+        for (int i = 0; i < 5; i++) {
             
-            JComponent[] term = terms.get(i);
+            JSpinner[] term = terms.get(i);
 
-            String sign;
-            String coef;
-            String vari;
-            if (term[0] instanceof JSpinner) {
-                sign = ((JSpinner)term[0]).getValue().toString();
-            } else {
-                sign = ((JLabel)term[0]).getText();
-            }
-            if (term[1] instanceof JSpinner) {
-                coef = ((JSpinner)term[1]).getValue().toString();
-            } else {
-                coef = ((JLabel)term[1]).getText();
-            }
-            if (term[2] instanceof JSpinner) {
-                vari = ((JSpinner)term[2]).getValue().toString();
-            } else {
-                vari = ((JLabel)term[2]).getText();
-            }
+            String sign = term[0].getValue().toString();
+            String coef = term[1].getValue().toString();
+            String vari = term[2].getValue().toString();
             
             polyTerms[i] = new Term(Integer.parseInt(sign+coef), Integer.parseInt(vari));
             

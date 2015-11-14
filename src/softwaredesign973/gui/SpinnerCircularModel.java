@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class SpinnerCircularModel extends SpinnerListModel {
 
+    //Model that loops
+
     public SpinnerCircularModel(Object[] values) {
         super(values);
     }

@@ -32,7 +32,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="7abb2" binding="list" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+          <grid id="7abb2" binding="list" custom-create="true" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints/>
             <properties/>
             <border type="none"/>
@@ -77,15 +77,6 @@
           <editable value="false"/>
         </properties>
       </component>
-      <grid id="496a9" binding="operations" layout-manager="GridBagLayout">
-        <constraints>
-          <grid row="2" column="3" row-span="2" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.1"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children/>
-      </grid>
       <component id="47837" class="javax.swing.JButton" binding="deletePolynomial">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>

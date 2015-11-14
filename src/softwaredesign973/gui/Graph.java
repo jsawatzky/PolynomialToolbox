@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -14,34 +15,41 @@ import java.util.ArrayList;
  */
 public class Graph extends JPanel {
 
-    private AffineTransform transform;
+    //FEILDS
 
+    //For rounding doubles
+    private DecimalFormat df = new DecimalFormat("#.###");
+
+    //Mouse listeners
     private MouseListener mouseListener;
     private MouseMotionListener mouseMotionListener;
     private MouseWheelListener mouseWheelListener;
 
+    //Last frame of the graph
     private BufferedImage lastImage;
 
+    //Mouse references
     private boolean mouseInside;
     private int mouseX, mouseY;
     private int lastMouseClickX, lastMouseClickY;
 
+    //Graph properties
     private double xCenter = 0, yCenter = 0;
     private double scale = 3;
     private int size;
 
-    private ArrayList<Function> functions = new ArrayList<>();
+    //Funtion to graph
+    private Function function = null;
 
     public Graph() {
 
         mouseListener = new MouseListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
+            public void mouseClicked(MouseEvent e) {}
 
             @Override
             public void mousePressed(MouseEvent e) {
+                //Set the references
                 lastMouseClickX = e.getX();
                 lastMouseClickY = e.getY();
             }
@@ -66,12 +74,15 @@ public class Graph extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
 
+                //Get the amount the mouse moved since last call
                 double xChange = getPlanePointX(e.getX()) - getPlanePointX(lastMouseClickX);
                 double yChange = getPlanePointY(e.getY()) - getPlanePointY(lastMouseClickY);
 
+                //Reset the references
                 lastMouseClickX = e.getX();
                 lastMouseClickY = e.getY();
 
+                //Move the center of the graph based on the change
                 xCenter -= xChange;
                 yCenter -= yChange;
 
@@ -82,6 +93,7 @@ public class Graph extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (mouseInside) {
+                    //Update references
                     mouseX = e.getX();
                     mouseY = e.getY();
                     update();
@@ -92,6 +104,7 @@ public class Graph extends JPanel {
         mouseWheelListener = new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
+                //Zoom in and out with scroll wheel
                 if (e.getWheelRotation() < 0) {
                     scale /= 1.5;
                 } else {
@@ -107,26 +120,22 @@ public class Graph extends JPanel {
 
     public void update() {
 
-//        if (transform == null) {
-//            transform = new AffineTransform();
-//            transform.translate(getWidth()/2, getHeight()/2);
-//            transform.scale(1, 1);
-//        }
-
+        //Initialize the image
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-//        g.setTransform(transform);
-
+        //Add rendering hints
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
+        //Set the size of the graph so scale is constant on both axes
         size = Math.min(getWidth(), getHeight());
 
+        //Draw main axis lines
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.BLACK);
         if (this.contains(getPixelPointX(0), 0)) {
@@ -135,21 +144,40 @@ public class Graph extends JPanel {
         if (this.contains(0, getPixelPointY(0))) {
             g.drawLine(0, getPixelPointY(0), getWidth(), getPixelPointY(0));
         }
+        //Draw minor axes lines
         g.setStroke(new BasicStroke(0.5f));
         g.setColor(Color.DARK_GRAY);
         for (double i = getPlanePointX(0)-Math.IEEEremainder(getPlanePointX(0), getAppropriateLabelInterval()); getPixelPointX(i) < getWidth(); i += getAppropriateLabelInterval()) {
             g.drawLine(getPixelPointX(i), 0, getPixelPointX(i), getHeight());
+            //Add labels (PARTIALLY WORKING)
+            if (this.contains(getPixelPointY(0), 0)) {
+                g.drawString(df.format(i), getPixelPointX(i), getPixelPointY(0));
+            } else {
+                double y = Math.min(Math.abs(getPlanePointY(0)), Math.abs(getPlanePointY(getHeight())));
+                g.drawString(df.format(i), getPixelPointX(i), getPixelPointY(y));
+            }
         }
         for (double i = getPlanePointY(0)-Math.IEEEremainder(getPlanePointY(0), getAppropriateLabelInterval()); getPixelPointY(i) < getHeight(); i -= getAppropriateLabelInterval()) {
             g.drawLine(0, getPixelPointY(i), getWidth(), getPixelPointY(i));
+            //Add labels (PARTIALLY WORKING)
+            if (this.contains(getPixelPointX(0), 0)) {
+                g.drawString(df.format(i), getPixelPointX(0), getPixelPointY(i));
+            } else {
+                double x = Math.min(Math.abs(getPlanePointX(0)), Math.abs(getPlanePointX(getWidth())));
+                g.drawString(df.format(i), getPixelPointX(x), getPixelPointY(i));
+            }
         }
 
-        for (Function f: functions) {
+        g.setStroke(new BasicStroke(2));
 
-            Polynomial p = f.getPolynomial();
+        if (function != null) {
+
+            //Get polynomial
+            Polynomial p = function.getPolynomial();
 
             double lastY = 0;
 
+            //Graph every point individually
             for (int Px = 0; Px < getWidth(); Px++) {
 
                 double x = getPlanePointX(Px);
@@ -158,9 +186,10 @@ public class Graph extends JPanel {
                 int Py = getPixelPointY(y);
 
                 if (this.contains(Px, Py)) {
-                    g.setColor(f.getColor());
+                    g.setColor(function.getColor());
                     g.fillRect(Px, Py, 1, 1);
                     if (Px != 0) {
+                        //Connect last two points with line
                         g.drawLine(Px-1, getPixelPointY(lastY), Px, Py);
                     }
                     if (Px == mouseX && Math.abs(Py-mouseY) < 20) {
@@ -183,6 +212,7 @@ public class Graph extends JPanel {
 
         lastImage = image;
 
+        //Put image on screen
         Graphics g2 = this.getGraphics();
         g2.drawImage(image, 0, 0, null);
         g2.dispose();
@@ -196,12 +226,13 @@ public class Graph extends JPanel {
         g.drawImage(lastImage, 0, 0, null);
     }
 
-    public void setFunctions(ArrayList<Function> functions) {
-        this.functions = functions;
+    public void setFunction(Function function) {
+        this.function = function;
     }
 
     private double getAppropriateLabelInterval() {
 
+        //Find label interval
         double numTicks = size/50;
         double exactGap = scale/numTicks;
         double gap = Math.pow(2, Math.round(Math.log10(exactGap)/Math.log10(2)));
