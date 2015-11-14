@@ -127,11 +127,22 @@ public class Graph extends JPanel {
 
         size = Math.min(getWidth(), getHeight());
 
-        g.setStroke(new BasicStroke(6));
-        g.setColor(Color.BLACK);
-        g.fillRect(getPixelPointX(0), 0, 2, getHeight());
-        g.fillRect(0, getPixelPointY(0), getWidth(), 2);
         g.setStroke(new BasicStroke(2));
+        g.setColor(Color.BLACK);
+        if (this.contains(getPixelPointX(0), 0)) {
+            g.drawLine(getPixelPointX(0), 0, getPixelPointX(0), getHeight());
+        }
+        if (this.contains(0, getPixelPointY(0))) {
+            g.drawLine(0, getPixelPointY(0), getWidth(), getPixelPointY(0));
+        }
+        g.setStroke(new BasicStroke(0.5f));
+        g.setColor(Color.DARK_GRAY);
+        for (double i = getPlanePointX(0)-Math.IEEEremainder(getPlanePointX(0), getAppropriateLabelInterval()); getPixelPointX(i) < getWidth(); i += getAppropriateLabelInterval()) {
+            g.drawLine(getPixelPointX(i), 0, getPixelPointX(i), getHeight());
+        }
+        for (double i = getPlanePointY(0)-Math.IEEEremainder(getPlanePointY(0), getAppropriateLabelInterval()); getPixelPointY(i) < getHeight(); i -= getAppropriateLabelInterval()) {
+            g.drawLine(0, getPixelPointY(i), getWidth(), getPixelPointY(i));
+        }
 
         for (Function f: functions) {
 
@@ -152,13 +163,14 @@ public class Graph extends JPanel {
                     if (Px != 0) {
                         g.drawLine(Px-1, getPixelPointY(lastY), Px, Py);
                     }
-                    if (Px == mouseX && Math.abs(Py-mouseY) < 5) {
+                    if (Px == mouseX && Math.abs(Py-mouseY) < 20) {
 
                         Polynomial tangent = p.getTangentAt(x);
 
                         g.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[] {10}, 0));
                         g.drawLine(0, getPixelPointY(tangent.evaluateAt(getPlanePointX(0))), getWidth(), getPixelPointY(tangent.evaluateAt(getPlanePointX(getWidth()))));
                         g.setStroke(new BasicStroke(2));
+                        g.fillOval(Px-5, Py-5, 10, 10);
 
                     }
                 }
@@ -190,7 +202,11 @@ public class Graph extends JPanel {
 
     private double getAppropriateLabelInterval() {
 
-        return 0.0;
+        double numTicks = size/50;
+        double exactGap = scale/numTicks;
+        double gap = Math.pow(2, Math.round(Math.log10(exactGap)/Math.log10(2)));
+
+        return gap;
 
     }
 
@@ -202,7 +218,7 @@ public class Graph extends JPanel {
 
     private double getPlanePointY(int Py) {
 
-        return (((Py-(getHeight()/2))*-1) * (scale/size)) + yCenter;
+        return (((-Py+(getHeight()/2))) * (scale/size)) + yCenter;
 
     }
 
@@ -214,7 +230,7 @@ public class Graph extends JPanel {
 
     private int getPixelPointY(double y) {
 
-        return (int)(((y-yCenter) * (size/scale)) + ((getHeight()/2)))*-1;
+        return (int)(((y-yCenter) * (size/scale)) - ((getHeight()/2)))*-1;
 
     }
 
