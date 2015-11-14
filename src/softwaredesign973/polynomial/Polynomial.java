@@ -28,10 +28,12 @@ public class Polynomial {
     }
 
     public Term[] getTerms() {
+        //Makes the terms into an array
         return (Term[]) terms.toArray();
     }
     
     public Polynomial getFullPolynomial() {
+        //Getting full polynomial for the purpose of sorting out and simplifying
 
         Term[] newTerms = new Term[terms.get(0).getExponent()];
 
@@ -54,7 +56,7 @@ public class Polynomial {
     }
 
     public Polynomial getFullPolynomial(int degree) {
-
+        
         Term[] newTerms = new Term[degree];
 
         int index = 0;
@@ -78,6 +80,7 @@ public class Polynomial {
     public void add(Polynomial other) {
 
         this.terms.addAll(other.terms);
+         //Just merge the two terms together and then simplify and sort
         simplify();
         sort();
 
@@ -89,8 +92,8 @@ public class Polynomial {
 
         newTerms.addAll(p1.terms);
         newTerms.addAll(p2.terms);
-
-        Polynomial newPolynomial = new Polynomial(newTerms);
+       
+        Polynomial newPolynomial = new Polynomial(newTerms); 
 
         return newPolynomial;
 
@@ -169,13 +172,13 @@ public class Polynomial {
 
     public Polynomial getTangentAt(double x) {
 
-        Polynomial der = getDerivative();
+        Polynomial der = getDerivative();  //Find the derivative of the function first in order to get the slope
 
-        double m = der.evaluateAt(x);
+        double m = der.evaluateAt(x); //Slope
 
-        double b = evaluateAt(x) - m*x;
+        double b = evaluateAt(x) - m*x; //The y-int of the tangent line
 
-        return new Polynomial(new Term[] {new Term(m, 1), new Term(b, 0)});
+        return new Polynomial(new Term[] {new Term(m, 1), new Term(b, 0)}); //Build a new polynomial for the tangent line
 
     }
     
@@ -245,11 +248,12 @@ public class Polynomial {
         return xInt;
     }
 
+    //Evaluating the function at x
     public double evaluateAt(double x) {
 
         double sum = 0;
         for (int i = 0; i < terms.size(); i++) { //Get the y-value
-            sum += (terms.get(i).getCoefficient() * Math.pow(x, terms.get(i).getExponent()));
+            sum += (terms.get(i).getCoefficient() * Math.pow(x, terms.get(i).getExponent())); //Find the value of term
         }
 
         return sum;
