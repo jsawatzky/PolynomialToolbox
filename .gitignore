@@ -16,3 +16,6 @@ hs_err_pid*
 nbproject/private/
 *.properties
 nbproject/private/private.xml
+
+.idea/
+out/
