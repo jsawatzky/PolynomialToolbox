@@ -1,8 +1,7 @@
-package softwaredesign973.gui;
+package polynomialtoolbox.gui;
 
-import softwaredesign973.polynomial.Polynomial;
+import polynomialtoolbox.polynomial.Polynomial;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**

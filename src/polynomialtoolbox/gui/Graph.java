@@ -1,14 +1,12 @@
-package softwaredesign973.gui;
+package polynomialtoolbox.gui;
 
-import softwaredesign973.polynomial.Polynomial;
+import polynomialtoolbox.polynomial.Polynomial;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /**
  * Created by Jacob on 2015-11-12.

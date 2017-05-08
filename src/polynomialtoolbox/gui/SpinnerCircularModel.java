@@ -1,4 +1,4 @@
-package softwaredesign973.gui;
+package polynomialtoolbox.gui;
 
 import javax.swing.*;
 import java.util.List;

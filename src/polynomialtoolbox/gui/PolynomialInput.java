@@ -1,12 +1,12 @@
-package softwaredesign973.gui;
+package polynomialtoolbox.gui;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import softwaredesign973.polynomial.Polynomial;
-import softwaredesign973.polynomial.Term;
+import polynomialtoolbox.polynomial.Polynomial;
+import polynomialtoolbox.polynomial.Term;
 
 public class PolynomialInput extends JPanel {
 

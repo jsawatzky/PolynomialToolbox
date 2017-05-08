@@ -1,4 +1,4 @@
-package softwaredesign973.polynomial;
+package polynomialtoolbox.polynomial;
 
 public class Term implements Comparable {
     
